@@ -1,3 +1,21 @@
+<?php
+$mysqli = new mysqli("localhost", "root", "", "can_emp");
+
+if ($mysqli->connect_error) {
+    die("Échec de la connexion à la base de données : " . $mysqli->connect_error);
+}
+
+$id_employeur = 1; // Remplacez par l'ID de l'employeur dont vous voulez afficher les informations.
+
+$query = "SELECT nom_de_l_entreprise, email, secteur_d_activite, adresse, numero_de_telephone FROM employeurs WHERE id = ?";
+$stmt = $mysqli->prepare($query);
+$stmt->bind_param("i", $id_employeur);
+$stmt->execute();
+$stmt->bind_result($nom_entreprise, $email, $secteur_activite, $adresse, $telephone);
+$stmt->fetch();
+$stmt->close();
+$mysqli->close();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,18 +64,20 @@
     </style>
 </head>
 <body>
-<body>
     <div class="container">
-        <a href="deconnexion.php" class="btn-deconnexion">Déconnexion</a>
         <h1>Bienvenue dans votre espace employeur</h1>
         <div class="info">
-            <p><strong>Nom de l'entreprise:</strong> <?php echo $_GET['nom_entreprise']; ?></p>
-            <p><strong>Email :</strong> <?php echo $_GET['email_entreprise']; ?></p>
-            <p><strong>Secteur d'activité :</strong> <?php echo $_GET['secteur_activite']; ?></p>
-            <p><strong>Adresse :</strong> <?php echo $_GET['adresse']; ?></p>
-            <p><strong>Numéro de Téléphone :</strong> <?php echo $_GET['telephone']; ?></p>
-            <!-- Ajoutez plus d'informations ici -->
+            <?php
+            echo "<p><strong>Nom de l'entreprise :</strong> $nom_entreprise</p>";
+            echo "<p><strong>Email de l'entreprise :</strong> $email</p>";
+            echo "<p><strong>Secteur d'activité :</strong> $secteur_activite</p>";
+            echo "<p><strong>Adresse :</strong> $adresse</p>";
+            echo "<p><strong>Numéro de téléphone :</strong> $telephone</p>";
+            ?>
         </div>
+        <form method="post" action="deconnexion.php">
+            <input type="submit" value="Déconnexion">
+        </form>
     </div>
 </body>
 </html>
