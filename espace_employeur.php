@@ -5,7 +5,17 @@ if ($mysqli->connect_error) {
     die("Échec de la connexion à la base de données : " . $mysqli->connect_error);
 }
 
-$id_employeur = 1; // Remplacez par l'ID de l'employeur dont vous voulez afficher les informations.
+// Assurez-vous que la session est démarrée
+session_start();
+
+// Vérifiez si l'employeur est connecté
+if (!isset($_SESSION['id_employeur'])) {
+    // L'employeur n'est pas connecté, redirigez vers la page de connexion
+    header("Location: connexion.php");
+    exit;
+}
+
+$id_employeur = $_SESSION['id_employeur'];
 
 $query = "SELECT nom_de_l_entreprise, email, secteur_d_activite, adresse, numero_de_telephone FROM employeurs WHERE id = ?";
 $stmt = $mysqli->prepare($query);
@@ -16,9 +26,12 @@ $stmt->fetch();
 $stmt->close();
 $mysqli->close();
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Employeur</title>
     <style>
         body {
