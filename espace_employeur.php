@@ -1,38 +1,7 @@
-<?php
-$mysqli = new mysqli("localhost", "root", "", "can_emp");
-
-if ($mysqli->connect_error) {
-    die("Échec de la connexion à la base de données : " . $mysqli->connect_error);
-}
-
-// Assurez-vous que la session est démarrée
-session_start();
-
-// Vérifiez si l'employeur est connecté
-if (!isset($_SESSION['id_employeur'])) {
-    // L'employeur n'est pas connecté, redirigez vers la page de connexion
-    header("Location: connexion.php");
-    exit;
-}
-
-$id_employeur = $_SESSION['id_employeur'];
-
-$query = "SELECT nom_de_l_entreprise, email, secteur_d_activite, adresse, numero_de_telephone FROM employeurs WHERE id = ?";
-$stmt = $mysqli->prepare($query);
-$stmt->bind_param("i", $id_employeur);
-$stmt->execute();
-$stmt->bind_result($nom_entreprise, $email, $secteur_activite, $adresse, $telephone);
-$stmt->fetch();
-$stmt->close();
-$mysqli->close();
-?>
-
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Employeur</title>
+    <title>Inscription Employeur</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,11 +23,18 @@ $mysqli->close();
             text-align: center;
             color: #333;
         }
-        .info {
-            margin-top: 20px;
+        label {
+            display: block;
+            font-weight: bold;
         }
-        .info p {
-            margin: 5px 0;
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
         }
         input[type="submit"] {
             background-color: #007bff;
@@ -68,29 +44,59 @@ $mysqli->close();
             border-radius: 3px;
             cursor: pointer;
             transition: background-color 0.3s;
-            display: block;
-            margin: 20px auto;
         }
         input[type="submit"]:hover {
             background-color: #0056b3;
+        }
+        #emailError {
+            color: red;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Bienvenue dans votre espace employeur</h1>
-        <div class="info">
-            <?php
-            echo "<p><strong>Nom de l'entreprise :</strong> $nom_entreprise</p>";
-            echo "<p><strong>Email de l'entreprise :</strong> $email</p>";
-            echo "<p><strong>Secteur d'activité :</strong> $secteur_activite</p>";
-            echo "<p><strong>Adresse :</strong> $adresse</p>";
-            echo "<p><strong>Numéro de téléphone :</strong> $telephone</p>";
-            ?>
-        </div>
-        <form method="post" action="deconnexion.php">
-            <input type="submit" value="Déconnexion">
+        <h1>Inscription Employeur</h1>
+        <form method="post" action="traitement_inscription_employeur.php">
+            <label for="nom_entreprise">Nom de l'entreprise :</label>
+            <input type="text" name="nom_entreprise" required autocomplete="off">
+            
+            <label for="email_entreprise">Email de l'entreprise :</label>
+            <input type="email" name="email_entreprise" required autocomplete="off">
+            <span id="emailError"></span>
+            
+            <label for="mot_de_passe">Mot de passe :</label>
+            <input type="password" name="mot_de_passe" required autocomplete="off">
+            
+            <label for="secteur_activite">Secteur d'activité :</label>
+            <input type="text" name="secteur_activite" required autocomplete="off">
+            
+            <label for="adresse">Adresse :</label>
+            <input type="text" name="adresse" required autocomplete="off">
+            
+            <label for="telephone">Numéro de téléphone :</label>
+            <input type="text" name="telephone" required autocomplete="off">
+            
+            <input type="submit" value="S'inscrire">
         </form>
     </div>
+
+    <script>
+        const emailInput = document.querySelector('input[name="email_entreprise"]');
+        const emailError = document.getElementById('emailError');
+
+        emailInput.addEventListener('input', function () {
+            const email = emailInput.value;
+            if (!isValidEmail(email)) {
+                emailError.textContent = 'Adresse e-mail invalide';
+            } else {
+                emailError.textContent = '';
+            }
+        });
+
+        function isValidEmail(email) {
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            return emailPattern.test(email);
+        }
+    </script>
 </body>
 </html>
