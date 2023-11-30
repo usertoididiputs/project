@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "", "can_emp");
+$mysqli = new mysqli("localhost", "root", " ", "can_emp");
 
 if ($mysqli->connect_error) {
     die("Échec de la connexion à la base de données : " . $mysqli->connect_error);
