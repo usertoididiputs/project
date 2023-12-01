@@ -10,7 +10,7 @@ session_start();
 // Vérifiez si l'employeur est connecté
 if (!isset($_SESSION['id_employeur'])) {
     header("Location: connexion.php");
-    exit;
+    exit; 
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
