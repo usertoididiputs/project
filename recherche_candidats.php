@@ -1,35 +1,9 @@
-<?php
-$mysqli = new mysqli("localhost", "root", "", "can_emp");
-
-if ($mysqli->connect_error) {
-    die("Échec de la connexion à la base de données : " . $mysqli->connect_error);
-}
-
-session_start();
-
-if (!isset($_SESSION['id_employeur'])) {
-    header("Location: connexion.php");
-    exit;
-}
-
-$id_employeur = $_SESSION['id_employeur'];
-
-$query = "SELECT nom_de_l_entreprise FROM employeurs WHERE id = ?";
-$stmt = $mysqli->prepare($query);
-$stmt->bind_param("i", $id_employeur);
-$stmt->execute();
-$stmt->bind_result($nom_entreprise);
-$stmt->fetch();
-$stmt->close();
-$mysqli->close();
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche de Candidats</title>
+    <title>Espace Employeur</title>
     <style>
         /* Vos styles CSS ici */
         body {
@@ -60,7 +34,7 @@ $mysqli->close();
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            width: 400px;
+            width: 80%;
             text-align: center;
             transition: transform 0.3s;
             margin-top: 20px;
@@ -75,6 +49,32 @@ $mysqli->close();
             color: #3498db;
         }
 
+        .info {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        input[type="submit"], input[type="reset"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+
+        input[type="submit"]:hover, input[type="reset"]:hover {
+            background-color: #0056b3;
+        }
+
         form {
             margin-top: 20px;
         }
@@ -87,6 +87,8 @@ $mysqli->close();
         }
 
         input[type="text"],
+        input[type="tel"],
+        input[type="email"],
         input[type="number"] {
             width: 100%;
             padding: 12px;
@@ -96,20 +98,36 @@ $mysqli->close();
             box-sizing: border-box;
         }
 
-        input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: block;
-            margin: 20px auto;
+        /* Style pour masquer la section des résultats par défaut */
+        .resultats-container {
+            display: none;
+            margin-top: 20px;
         }
 
-        input[type="submit"]:hover {
-            background-color: #0056b3;
+        /* Style pour les résultats */
+        .resultats {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .resultats th, .resultats td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .resultats th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .resultats tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .resultats tr:hover {
+            background-color: #ddd;
         }
     </style>
 </head>
@@ -121,21 +139,57 @@ $mysqli->close();
         <a href="candidats.php">Candidats</a>
         <a href="deconnexion.php">Déconnexion</a>
         <a href="mes_offres.php">Mes Offres</a>
+
+        <!-- Ajout du lien vers la page de publication d'offres -->
         <a href="publier_offre.php">Publier une offre d'emploi</a>
-        <!-- Ajout du lien vers la page de recherche de candidats -->
-        <a href="recherche_candidats.php">Rechercher des candidats</a>
     </div>
     <div class="container">
         <h1>Bienvenue dans l'espace employeur de <?php echo $nom_entreprise; ?></h1>
-        <form method="post" action="traitement_recherche_candidats.php">
+        <form id="rechercheForm" method="post" action="recherche_candidats.php">
             <label for="nom_candidat">Nom du candidat :</label>
             <input type="text" name="nom_candidat">
+
+            <label for="competence">Compétence :</label>
+            <input type="text" name="competence">
 
             <label for="experience">Expérience (en années) :</label>
             <input type="number" name="experience" min="0">
 
             <input type="submit" value="Rechercher des candidats">
+            <input type="reset" value="Réinitialiser" onclick="resetForm()">
         </form>
+
+        <!-- Section des résultats -->
+        <div class="resultats-container">
+            <?php
+            // Affichez les résultats de la recherche
+            if (!empty($resultats)) {
+                echo "<h2>Résultats de la recherche</h2>";
+                echo "<table class='resultats'>";
+                echo "<tr><th>Nom</th><th>Prénom</th><th>Email</th><th>CV</th><th>Compétences</th><th>Expériences professionnelles</th></tr>";
+                foreach ($resultats as $resultat) {
+                    echo "<tr>";
+                    echo "<td>" . $resultat['nom'] . "</td>";
+                    echo "<td>" . $resultat['prenom'] . "</td>";
+                    echo "<td>" . $resultat['email'] . "</td>";
+                    echo "<td>" . $resultat['cv'] . "</td>";
+                    echo "<td>" . $resultat['competences'] . "</td>";
+                    echo "<td>" . $resultat['experiences_professionnelles'] . " années</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+            }
+            ?>
+        </div>
+
+        <script>
+            function resetForm() {
+                // Réinitialise le formulaire
+                document.getElementById("rechercheForm").reset();
+                // Cache la section des résultats
+                document.querySelector(".resultats-container").style.display = 'none';
+            }
+        </script>
     </div>
 </body>
 </html>
