@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #3498db;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -14,22 +16,31 @@
         }
         .container {
             background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             padding: 20px;
             width: 400px;
             text-align: center;
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02);
         }
         h1 {
             text-align: center;
-            color: #333;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #7f8c8d;
         }
         a {
             text-decoration: none;
+            color: #fff;
         }
         .button {
-            display: block;
-            background-color: #007bff;
+            display: inline-block;
+            background-color: #3498db;
             color: #fff;
             padding: 10px 20px;
             border: none;
@@ -37,19 +48,45 @@
             cursor: pointer;
             transition: background-color 0.3s;
             margin: 10px;
+            text-align: center;
+            font-size: 16px;
         }
         .button:hover {
-            background-color: #0056b3;
+            background-color: #2980b9;
         }
         .login-form {
             margin-top: 20px;
         }
+        .login-form h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
         .login-form input {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0;
+            padding: 12px;
+            margin: 8px 0;
             border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .login-form input[type="text"]:focus,
+        .login-form input[type="email"]:focus,
+        .login-form input[type="password"]:focus {
+            border-color: #3498db;
+        }
+        .login-form input[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px 20px;
+            border: none;
             border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 18px;
+        }
+        .login-form input[type="submit"]:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
