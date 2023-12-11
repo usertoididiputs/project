@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,10 +32,7 @@
         .menu a:hover {
             background-color: #555;
         }
-/*0 à 1 année d’expérience
-2 à 4 années d’expérience
- 5 à 9 années d’expérience
-plus de 10 ans d’expérience*/
+
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -67,7 +65,7 @@ plus de 10 ans d’expérience*/
             display: block;
         }
 
-        input[type="text"] {
+        select {
             width: 100%;
             padding: 8px;
             margin-bottom: 16px;
@@ -91,6 +89,7 @@ plus de 10 ans d’expérience*/
 
         .resultats-container {
             margin-top: 20px;
+            display: none; /* masquer initialement la section des résultats */
         }
 
         h2 {
@@ -122,6 +121,7 @@ plus de 10 ans d’expérience*/
         }
     </style>
 </head>
+
 <body>
     <div class="menu">
         <!-- Ajoutez vos liens de menu ici -->
@@ -143,6 +143,13 @@ plus de 10 ans d’expérience*/
 
             <label for="langue">Langue :</label>
             <input type="text" name="langue">
+
+            <label for="competences_cles">Compétences Clés :</label>
+            <select name="competences_cles[]" multiple>
+                <option value="communication">Communication</option>
+                <option value="developpement_web">Développement Web</option>
+                <!-- Ajoutez d'autres compétences clés ici -->
+            </select>
 
             <input type="submit" name="trouver_profil" value="Trouver un profil">
             <input type="reset" value="Réinitialiser" onclick="resetForm()">
@@ -177,10 +184,16 @@ plus de 10 ans d’expérience*/
             function resetForm() {
                 // Réinitialise le formulaire
                 document.getElementById("rechercheForm").reset();
-                // Cache la section des résultats
+                // Affiche la section des résultats
                 document.querySelector(".resultats-container").style.display = 'none';
             }
+
+            document.getElementById("rechercheForm").addEventListener("submit", function(event) {
+                // Affiche la section des résultats
+                document.querySelector(".resultats-container").style.display = 'block';
+            });
         </script>
     </div>
 </body>
+
 </html>
