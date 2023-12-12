@@ -89,7 +89,7 @@
 
         .resultats-container {
             margin-top: 20px;
-            display: none; /* masquer initialement la section des résultats */
+            display: none;
         }
 
         h2 {
@@ -128,6 +128,7 @@
     </div>
     <div class="container">
         <h1>Bienvenue dans notre site</h1>
+
         <form id="rechercheForm" method="post" action="recherche_candidats.php">
             <label for="recherche_globale">Compétences :</label>
             <input type="text" name="recherche_globale">
@@ -184,7 +185,7 @@
             function resetForm() {
                 // Réinitialise le formulaire
                 document.getElementById("rechercheForm").reset();
-                // Affiche la section des résultats
+                // Cache la section des résultats
                 document.querySelector(".resultats-container").style.display = 'none';
             }
 
