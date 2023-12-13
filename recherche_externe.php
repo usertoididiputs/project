@@ -73,6 +73,14 @@
         }
 
         input[type="submit"],
+        input[type="reset"],
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"],
         input[type="reset"] {
             background-color: #4caf50;
             color: white;
@@ -137,7 +145,7 @@
             <input type="text" name="id_candidat">
 
             <label for="disponibilite">Disponibilité :</label>
-            <input type="text" name="disponibilite">
+            <input type="range" name="disponibilite" min="0" max="100" value="50">
 
             <label for="niveau_etude">Niveau d'études :</label>
             <input type="text" name="niveau_etude">
