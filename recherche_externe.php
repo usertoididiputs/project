@@ -10,7 +10,7 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f7f7f7;
             color: #333;
         }
 
@@ -63,36 +63,65 @@
             flex-basis: 48%;
             margin-bottom: 8px;
             display: block;
+            color: #333;
         }
 
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"],
-        input[type="reset"],
-        input[type="range"] {
-            width: 100%;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
-
+        select,
+        input[type="text"],
+        input[type="range"],
         input[type="submit"],
         input[type="reset"] {
-            background-color: #4caf50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            margin: 8px 0;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background-color: #3498db;
+            border-radius: 50%;
             cursor: pointer;
         }
 
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: #ccc;
+            border-radius: 2px;
+        }
+
+        input[type="submit"],
         input[type="reset"] {
-            background-color: #ff9800;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="reset"] {
+            background-color: #e74c3c;
             margin-left: 10px;
+        }
+
+        input[type="submit"]:hover,
+        input[type="reset"]:hover {
+            background-color: #2980b9;
         }
 
         .resultats-container {
@@ -114,14 +143,20 @@
             flex-basis: 48%;
             margin: 10px 0;
             padding: 15px;
-            background-color: #fff;
+            background-color: #ecf0f1;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             text-align: left;
+            transition: background-color 0.3s;
+        }
+
+        .candidat:hover {
+            background-color: #d1d8db;
         }
 
         .candidat p {
             margin: 8px 0;
+            color: #333;
         }
 
         a {
