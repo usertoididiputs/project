@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Employeur</title>
     <style>
+        /* Styles de base */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
+            background-color: #f4f4f4;
             color: #333;
+            line-height: 1.6;
         }
 
+        /* Menu */
         .menu {
-            background-color: #333;
+            background-color: #0275d8;
             padding: 10px;
             text-align: center;
         }
@@ -30,148 +33,103 @@
         }
 
         .menu a:hover {
-            background-color: #555;
+            background-color: #025aa5;
         }
 
+        /* Conteneur principal */
         .container {
-            max-width: 800px;
+            width: 80%;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            color: #3498db;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
+        /* Formulaire */
         form {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
 
-        label {
-            flex-basis: 48%;
-            margin-bottom: 8px;
+        form label {
             display: block;
+            margin-bottom: 5px;
             color: #333;
         }
 
-        select,
-        input[type="text"],
-        input[type="range"],
-        input[type="submit"],
-        input[type="reset"] {
+        form input[type="text"],
+        form input[type="range"],
+        form select,
+        form input[type="submit"],
+        form input[type="reset"] {
             width: 100%;
             padding: 10px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
-            color: #333;
         }
 
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            margin: 8px 0;
-            padding: 0;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 15px;
-            height: 15px;
-            background-color: #3498db;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 3px;
-            cursor: pointer;
-            background: #ccc;
-            border-radius: 2px;
-        }
-
+        /* Boutons */
         input[type="submit"],
         input[type="reset"] {
-            background-color: #3498db;
-            color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
+            border: none;
+            outline: none;
+            background-color: #5cb85c;
+            color: white;
         }
 
         input[type="reset"] {
-            background-color: #e74c3c;
-            margin-left: 10px;
+            background-color: #d9534f;
         }
 
         input[type="submit"]:hover,
         input[type="reset"]:hover {
-            background-color: #2980b9;
+            opacity: 0.8;
         }
 
+        /* Section des résultats */
         .resultats-container {
             margin-top: 20px;
-            display: none;
-        }
-
-        h2 {
-            color: #333;
-        }
-
-        .resultats {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
         }
 
         .candidat {
-            flex-basis: 48%;
-            margin: 10px 0;
-            padding: 15px;
             background-color: #ecf0f1;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            text-align: left;
-            transition: background-color 0.3s;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
         }
 
         .candidat:hover {
             background-color: #d1d8db;
         }
 
-        .candidat p {
-            margin: 8px 0;
-            color: #333;
-        }
-
-        a {
-            color: #3498db;
+        /* Responsive */
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="menu">
-        <!-- Ajoutez vos liens de menu ici -->
+        <a href="#">Accueil</a>
+        <a href="#">Recherche</a>
+        <a href="#">Contact</a>
     </div>
     <div class="container">
-        <h1>Bienvenue dans notre site</h1>
-
+        <h1>Bienvenue dans notre Espace Employeur</h1>
         <form id="rechercheForm" method="post" action="recherche_candidats.php">
             <label for="recherche_globale">Compétences :</label>
             <input type="text" name="recherche_globale">
@@ -199,45 +157,31 @@
             <input type="reset" value="Réinitialiser" onclick="resetForm()">
         </form>
 
-        <!-- Section des résultats -->
         <div class="resultats-container">
-            <?php
-            // Affichez les résultats de la recherche
-            if (!empty($resultats)) {
-                echo "<h2>Résultats de la recherche</h2>";
-                echo "<div class='resultats'>";
-                foreach ($resultats as $resultat) {
-                    echo "<div class='candidat'>";
-                    echo "<p><strong>Nom:</strong> " . $resultat['nom'] . "</p>";
-                    echo "<p><strong>Prénom:</strong> " . $resultat['prenom'] . "</p>";
-                    echo "<p><strong>Email:</strong> " . $resultat['email'] . "</p>";
-                    echo "<p><strong>CV:</strong> <a href='{$resultat['cv']}' target='_blank'>Télécharger le CV</a></p>";
-                    echo "<p><strong>Compétences:</strong> " . $resultat['competences'] . "</p>";
-                    echo "<p><strong>Expériences professionnelles:</strong> " . $resultat['experiences_professionnelles'] . " années</p>";
-                    echo "<p><strong>Disponibilité:</strong> " . $resultat['disponibilite'] . "</p>";
-                    echo "<p><strong>Fourchette Salariale:</strong> " . $resultat['fourchette_salariale'] . " k€</p>";
-                    echo "<p><strong>Langues:</strong> " . $resultat['langues'] . "</p>";
-                    echo "</div>";
-                }
-                echo "</div>";
-            }
-            ?>
+            <!-- Les résultats de la recherche seront affichés ici -->
         </div>
+    </div>
+    <script>
+        function resetForm() {
+            document.getElementById("rechercheForm").reset();
+            document.querySelector(".resultats-container").style.display = 'none';
+        }
 
-        <script>
-            function resetForm() {
-                // Réinitialise le formulaire
-                document.getElementById("rechercheForm").reset();
-                // Cache la section des résultats
-                document.querySelector(".resultats-container").style.display = 'none';
+        document.getElementById("rechercheForm").addEventListener("submit", function(event) {
+            var isValid = true;
+            var rechercheGlobale = document.forms["rechercheForm"]["recherche_globale"].value;
+            if (rechercheGlobale == "") {
+                alert("Le champ 'Compétences' ne peut pas être vide.");
+                isValid = false;
             }
 
-            document.getElementById("rechercheForm").addEventListener("submit", function(event) {
-                // Affiche la section des résultats
-                document.querySelector(".resultats-container").style.display = 'block';
-            });
-        </script>
-    </div>
+            if (isValid) {
+                this.submit();
+            } else {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 
 </html>
