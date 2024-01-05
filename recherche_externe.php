@@ -5,141 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Employeur</title>
     <style>
-        /* Styles de base */
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
             color: #333;
         }
 
-        /* Menu */
-        .menu {
-            background-color: #0275d8;
-            padding: 15px 0;
-            text-align: center;
-        }
-
-        .menu a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            transition: color 0.3s, background-color 0.3s;
-        }
-
-        .menu a:hover {
-            background-color: #025aa5;
-            border-radius: 5px;
-        }
-
-        /* Conteneur principal */
         .container {
             max-width: 800px;
-            margin: 30px auto;
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        /* Styles de titre */
-        h1 {
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             text-align: center;
-            margin-bottom: 30px;
         }
 
-        /* Styles du formulaire */
+        h1 {
+            color: #3498db;
+        }
+
         form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
 
-        form label {
-            font-weight: 500;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
 
-        form input[type="text"], form input[type="range"], form select {
+        input[type="text"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
         }
 
-        /* Styles des boutons */
-        input[type="submit"], input[type="reset"] {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            color: white;
+        input[type="range"] {
+            width: 100%;
+            padding: 8px;
         }
 
         input[type="submit"] {
-            background-color: #5cb85c;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        input[type="reset"] {
-            background-color: #d9534f;
+        .resultats-container {
+            margin-top: 20px;
         }
 
-        input[type="submit"]:hover {
-            background-color: #4cae4c;
+        h2 {
+            color: #333;
         }
 
-        input[type="reset"]:hover {
-            background-color: #c9302c;
+        .resultats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .candidat {
+            flex-basis: 48%;
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .candidat p {
+            margin: 8px 0;
+        }
+
+        a {
+            color: #3498db;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <a href="#">Accueil</a>
-        <a href="#">Recherche</a>
-        <a href="#">Contact</a>
-    </div>
     <div class="container">
-        <h1>Bienvenue dans notre Espace Employeur</h1>
+        <h1>Bienvenue dans notre site</h1>
         <form id="rechercheForm" method="post" action="recherche_candidats.php">
-            <label for="recherche_globale">Compétences :</label>
+            <label for="recherche_globale">Compétences (séparées par des virgules) :</label>
             <input type="text" name="recherche_globale">
 
-            <label for="id_candidat">ID Candidat :</label>
-            <input type="text" name="id_candidat">
+            <label for="experience">Expérience minimale (en années) :</label>
+            <input type="range" name="experience" min="0" max="10" step="1" value="0">
+            <output for="experience">0</output>
 
-            <label for="disponibilite">Disponibilité :</label>
-            <input type="range" name="disponibilite" min="0" max="100" value="50">
-
-            <label for="niveau_etude">Niveau d'études :</label>
-            <input type="text" name="niveau_etude">
-
-            <label for="langue">Langue :</label>
-            <input type="text" name="langue">
-
-            <label for="competences_cles">Compétences Clés :</label>
-            <select name="competences_cles[]" multiple>
-                <option value="communication">Communication</option>
-                <option value="developpement_web">Développement Web</option>
-                <!-- Ajoutez d'autres compétences clés ici -->
-            </select>
-
-            <input type="submit" name="trouver_profil" value="Trouver un profil">
-            <input type="reset" value="Réinitialiser">
+            <input type="submit" name="trouver_profil" value="Rechercher">
         </form>
 
+        <!-- Section des résultats -->
         <div class="resultats-container">
-            <!-- Les résultats de la recherche seront affichés ici -->
+            <?php
+            // Affichez les résultats de la recherche ici
+            ?>
         </div>
     </div>
+
     <script>
-        document.getElementById('rechercheForm').addEventListener('submit', function(event) {
-            var rechercheGlobale = document.forms['rechercheForm']['recherche_globale'].value;
-            if (rechercheGlobale.trim() === '') {
-                alert("Le champ 'Compétences' ne peut pas être vide.");
-                event.preventDefault();
-            }
+        // Mise à jour de la valeur de l'expérience en temps réel
+        const experienceInput = document.querySelector('input[name="experience"]');
+        const experienceOutput = document.querySelector('output[for="experience"]');
+        
+        experienceInput.addEventListener('input', function() {
+            experienceOutput.textContent = this.value;
         });
     </script>
 </body>
