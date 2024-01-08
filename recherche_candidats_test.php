@@ -1,104 +1,144 @@
-<?php
-$mysqli = new mysqli("localhost", "root", "", "can_emp");
-
-if ($mysqli->connect_error) {
-    die("Échec de la connexion à la base de données : " . $mysqli->connect_error);
-}
-
-// Assurez-vous que la session est démarrée
-session_start();
-
-// Vérifiez si l'employeur est connecté
-if (!isset($_SESSION['id_employeur'])) {
-    // L'employeur n'est pas connecté, redirigez vers la page de connexion
-    header("Location: connexion.php");
-    exit;
-}
-
-$id_employeur = $_SESSION['id_employeur'];
-
-$query = "SELECT nom_de_l_entreprise, email, secteur_d_activite, adresse, numero_de_telephone FROM employeurs WHERE id = ?";
-$stmt = $mysqli->prepare($query);
-$stmt->bind_param("i", $id_employeur);
-$stmt->execute();
-$stmt->bind_result($nom_entreprise, $email, $secteur_activite, $adresse, $telephone);
-$stmt->fetch();
-$stmt->close();
-
-// Définissez des variables pour stocker les résultats de la recherche
-$resultats = array();
-
-// Vérifiez si le formulaire a été soumis
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupérez les critères de recherche du formulaire
-    $recherche_globale = $_POST['recherche_globale'] ?? '';
-    $id_candidat = $_POST['id_candidat'] ?? '';
-    $disponibilite = $_POST['disponibilite'] ?? '';
-    $niveau_etude = $_POST['niveau_etude'] ?? '';
-    $langue = $_POST['langue'] ?? '';
-
-    // Si le bouton "Trouver un profil" est cliqué
-    if (isset($_POST['trouver_profil'])) {
-        // Séparez les compétences par des virgules et supprimez les espaces
-        $competences_array = array_map('trim', explode(',', $recherche_globale));
-        // Créez un tableau de paramètres de liaison pour chaque compétence
-        $params = str_repeat('s', count($competences_array));
-        // Construisez la requête SQL pour la recherche par compétences
-        $query = "SELECT id, nom, prenom, email, cv, competences, experiences_professionnelles, disponibilite, fourchette_salariale, langues FROM candidats WHERE ";
-        foreach ($competences_array as $competence) {
-            $query .= "competences LIKE ? OR ";
-        }
-        $query = rtrim($query, " OR ");
-
-        // Ajoutez les critères supplémentaires
-        if (!empty($id_candidat)) {
-            $query .= "AND id = ? ";
-            $params .= 'i';
-            $competences_array[] = $id_candidat;
-        }
-        if (!empty($disponibilite)) {
-            $query .= "AND disponibilite = ? ";
-            $params .= 's';
-            $competences_array[] = $disponibilite;
-        }
-        if (!empty($niveau_etude)) {
-            $query .= "AND niveau_etude = ? ";
-            $params .= 's';
-            $competences_array[] = $niveau_etude;
-        }
-        if (!empty($langue)) {
-            $query .= "AND langues LIKE ? ";
-            $params .= 's';
-            $competences_array[] = '%' . $langue . '%';
-        }
-
-        $stmt = $mysqli->prepare($query);
-        $stmt->bind_param($params, ...$competences_array);
-        $stmt->execute();
-        $resultats = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
-    }
-}
-$mysqli->close();
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Employeur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Vos styles CSS ici */
-        /* ... (styles précédents) ... */
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        form:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        input[type="reset"] {
+            background-color: #ff9800;
+        }
+
+        input[type="submit"]:hover,
+        input[type="reset"]:hover {
+            opacity: 0.9;
+        }
+
+        .resultats-container {
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .resultats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .candidat {
+            flex-basis: 48%;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: box-shadow 0.3s;
+        }
+
+        .candidat:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .candidat p {
+            margin: 5px 0;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #1a8cd8;
+        }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <!-- ... (menu précédent) ... -->
+    <div class="header">
+        <h1>Bienvenue dans l'espace employeur</h1>
     </div>
     <div class="container">
-        <h1>Bienvenue dans l'espace employeur de <?php echo $nom_entreprise; ?></h1>
+        <h1>Résultats de la recherche</h1>
         <form id="rechercheForm" method="post" action="recherche_candidats.php">
             <label for="recherche_globale">Compétences :</label>
             <input type="text" name="recherche_globale">
@@ -122,36 +162,16 @@ $mysqli->close();
         <!-- Section des résultats -->
         <div class="resultats-container">
             <?php
-            // Affichez les résultats de la recherche
-            if (!empty($resultats)) {
-                echo "<h2>Résultats de la recherche</h2>";
-                echo "<div class='resultats'>";
-                foreach ($resultats as $resultat) {
-                    echo "<div class='candidat'>";
-                    echo "<p><strong>Nom:</strong> " . $resultat['nom'] . "</p>";
-                    echo "<p><strong>Prénom:</strong> " . $resultat['prenom'] . "</p>";
-                    echo "<p><strong>Email:</strong> " . $resultat['email'] . "</p>";
-                    echo "<p><strong>CV:</strong> <a href='{$resultat['cv']}' target='_blank'>Télécharger le CV</a></p>";
-                    echo "<p><strong>Compétences:</strong> " . $resultat['competences'] . "</p>";
-                    echo "<p><strong>Expériences professionnelles:</strong> " . $resultat['experiences_professionnelles'] . " années</p>";
-                    echo "<p><strong>Disponibilité:</strong> " . $resultat['disponibilite'] . "</p>";
-                    echo "<p><strong>Fourchette Salariale:</strong> " . $resultat['fourchette_salariale'] . " k€</p>";
-                    echo "<p><strong>Langues:</strong> " . $resultat['langues'] . "</p>";
-                    echo "</div>";
-                }
-                echo "</div>";
-            }
+            // Affichez les résultats de la recherche ici
             ?>
         </div>
-
-        <script>
-            function resetForm() {
-                // Réinitialise le formulaire
-                document.getElementById("rechercheForm").reset();
-                // Cache la section des résultats
-                document.querySelector(".resultats-container").style.display = 'none';
-            }
-        </script>
     </div>
+
+    <script>
+        function resetForm() {
+            document.getElementById("rechercheForm").reset();
+            document.querySelector(".resultats-container").style.display = 'none';
+        }
+    </script>
 </body>
 </html>
